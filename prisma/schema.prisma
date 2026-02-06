@@ -1,0 +1,53 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================================
+// Notification Domain Models
+// ============================================================================
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String?
+  link      String?
+  isRead    Boolean          @default(false)
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+// ============================================================================
+// Enums
+// ============================================================================
+
+enum NotificationType {
+  CAMPAIGN_ACCEPTED
+  CAMPAIGN_REJECTED
+  NEW_CAMPAIGN
+  CAMPAIGN_ENDING
+  CAMPAIGN_ENDED
+  CLIP_APPROVED
+  CLIP_REJECTED
+  CLIP_MILESTONE
+  PAYMENT_CREDITED
+  PAYMENT_PROCESSING
+  PAYMENT_COMPLETED
+  PAYMENT_ERROR
+  SYSTEM_ALERT
+  DISCORD_DISCONNECTED
+  WALLET_NOT_CONFIGURED
+  PROFILE_INCOMPLETE
+  STUDIO_INVITE
+}
